@@ -6,35 +6,30 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Home() {
 
-  const [testData, setTestData] = useState(null)
+  // const [testData, setTestData] = useState(null)
 
-  // test load data dari server
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const res = await fetchData()
-        if (res) {
-          setTestData(res)
-        } else {
-          setTestData("API belum aktif!")
-        }
-      } catch (error) {
-        console.log("Fetching data gagal", error)
-      }
-    }
+  // // test load data dari server
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     try {
+  //       const res = await fetchData()
+  //       if (res) {
+  //         setTestData(res)
+  //       } else {
+  //         setTestData("API belum aktif!")
+  //       }
+  //     } catch (error) {
+  //       console.log("Fetching data gagal", error)
+  //     }
+  //   }
 
-    loadData()
-  }, [])
+  //   loadData()
+  // }, [])
 
   return (
     <div>
       <h1>Welcome to My App!</h1>
-      {testData ? <div>    <ul>
-        {testData.map((item, index) => (
-          <li key={index}>{item.text}</li>
-        ))}
-      </ul>
-      </div> : <CircularProgress />}
+      <h2>PERBANDINGAN METODE NAIVE BAYES CLASSIFIER DAN SUPPORT VECTOR MACHINE PADA ANALISIS SENTIMEN TANGGAPAN NETIZEN TERHADAP FENOMENA #KABURAJADULU</h2>
     </div>
   )
 }
