@@ -29,7 +29,12 @@ export default function Home() {
   return (
     <div>
       <h1>Welcome to My App!</h1>
-      <p>{testData ? testData : <CircularProgress />}</p>
+      {testData ? <div>    <ul>
+        {testData.map((item, index) => (
+          <li key={index}>{item.text}</li>
+        ))}
+      </ul>
+      </div> : <CircularProgress />}
     </div>
   )
 }
