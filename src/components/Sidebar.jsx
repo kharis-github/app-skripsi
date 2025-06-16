@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const Sidebar = () => {
   const navItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
-    { text: "About", icon: <InfoIcon />, path: "/about" },
+    { text: "Simulasi Penelitian", icon: <InfoIcon />, path: "/about" },
     { text: "Credits", icon: <InfoIcon />, path: "/credits" },
   ];
 
