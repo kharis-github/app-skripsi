@@ -1,7 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react';
+import axios from 'axios';
+import { uploadRawText } from '../api/api';
 
-export default function ThirdPage() {
+const ThirdPage = () => {
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    uploadRawText(file)
+  };
+
   return (
-    <div>by Kharis Teofile Amazio - 2111501769</div>
-  )
+    <div style={{ padding: 30 }}>
+      <input type="file" accept=".xlsx" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload Excel</button>
+    </div>
+  );
 }
+
+export default ThirdPage;

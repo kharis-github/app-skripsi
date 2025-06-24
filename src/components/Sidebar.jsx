@@ -8,7 +8,7 @@ const Sidebar = () => {
   const navItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Simulasi Penelitian", icon: <InfoIcon />, path: "/about" },
-    { text: "Credits", icon: <InfoIcon />, path: "/credits" },
+    { text: "Upload Data", icon: <InfoIcon />, path: "/credits" },
   ];
 
   return (

@@ -34,14 +34,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 //   return { name, calories, fat, carbs, protein };
 // }
 function createData(text, label) {
-  console.log({ text, label })
+  // console.log({ text, label })
   return { text, label };
 }
-
-const headers = [
-  'Text',
-  'Label'
-]
 
 export default function CustomizedTables(props) {
   // kontrol utk pagination
@@ -51,6 +46,11 @@ export default function CustomizedTables(props) {
   const rows = props.data || [
     createData('Saya ingin cepet-cepet #kaburajadulu', 1),
     createData('ya keles tngl di konoha, #kaburajadulu adl jln yg plg bener!!!', 1),
+  ]
+
+  const headers = props.headers || [
+    'Text',
+    'Label'
   ]
 
   // logika perubahan halaman
@@ -63,30 +63,33 @@ export default function CustomizedTables(props) {
 
 
   return (
-    <TableContainer component={Paper} sx={{ maxWidth: '1000px', overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            {/* <StyledTableCell>Text</StyledTableCell>
+    <>
+      <TableContainer component={Paper} sx={{ maxWidth: '1200px', overflowX: 'auto' }}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              {/* <StyledTableCell>Text</StyledTableCell>
             <StyledTableCell align="right">Label</StyledTableCell> */}
-            {headers.map((item, index) => (
-              <StyledTableCell align={index > 0 ? "right" : "none"} key={index}>{item}</StyledTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {paginatedRows.map((row) => (
-            <StyledTableRow key={row.id}>
-              <StyledTableCell component="th" scope="row">
-                {row[headers[0].toLowerCase()]}
-              </StyledTableCell>
               {headers.map((item, index) => (
-                index > 0 ? <StyledTableCell align="right" key={index}>{row[item.toLowerCase()]}</StyledTableCell> : null
+                <StyledTableCell align={index > 0 ? "right" : "none"} key={index} sx={item.toLowerCase() === 'full_text' ? { width: '200px' } : {}}>{item}</StyledTableCell>
               ))}
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedRows.map((row) => (
+              <StyledTableRow key={row.id}>
+                <StyledTableCell component="th" scope="row">
+                  {row[headers[0].toLowerCase()]}
+                </StyledTableCell>
+                {headers.map((item, index) => (
+                  index > 0 ? <StyledTableCell align="right" key={index} sx={item.toLowerCase() === 'full_text' ? { width: '200px' } : {}}
+                  >{row[item.toLowerCase()]}</StyledTableCell> : null
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10]}
         component="div"
@@ -95,7 +98,6 @@ export default function CustomizedTables(props) {
         page={page}
         onPageChange={handleChangePage}
       />
-
-    </TableContainer>
+    </>
   );
 }

@@ -5,6 +5,25 @@ import { Box, Button, Card, CardActions, CardContent, Paper, Typography } from '
 
 export default function SecondPage() {
 
+  const headers = [
+    'id',
+    'conversation_id_str',
+    'created_at',
+    'favorite_count',
+    'full_text',
+    'id_str',
+    'image_url',
+    'in_reply_to_screen_name',
+    'lang',
+    'location',
+    'quote_count',
+    'reply_count',
+    'retweet_count',
+    'tweet_url',
+    'user_id_str',
+    'username',
+  ]
+
   const [testData, setTestData] = useState(null)
 
   // test load data dari server
@@ -13,7 +32,12 @@ export default function SecondPage() {
       try {
         const res = await fetchData()
         if (res) {
-          setTestData(res)
+          // set text data agar memotong data text
+          const data = res.map((item) => ({
+            ...item,
+            full_text: item.full_text.length > 40 ? item.full_text.slice(0, 40) + "..." : item.full_text
+          }))
+          setTestData(data)
         } else {
           setTestData("API belum aktif!")
         }
@@ -28,7 +52,7 @@ export default function SecondPage() {
   return (
     <Box p={2}>
       <Paper elevation={4} sx={{ mb: 4 }}>
-        <CustomizedTables data={testData} />
+        <CustomizedTables data={testData} headers={headers} />
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
         <Card sx={{ minWidth: 275 }}>
@@ -46,7 +70,7 @@ export default function SecondPage() {
         </Card>
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
-        <CustomizedTables data={testData} />
+        <CustomizedTables data={testData} headers={headers} />
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
         <Card sx={{ minWidth: 275 }}>
@@ -64,7 +88,7 @@ export default function SecondPage() {
         </Card>
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
-        <CustomizedTables data={testData} />
+        <CustomizedTables data={testData} headers={headers} />
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
         <Card sx={{ minWidth: 275 }}>
@@ -82,7 +106,7 @@ export default function SecondPage() {
         </Card>
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
-        <CustomizedTables data={testData} />
+        <CustomizedTables data={testData} headers={headers} />
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
         <Card sx={{ minWidth: 275 }}>
@@ -100,7 +124,7 @@ export default function SecondPage() {
         </Card>
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
-        <CustomizedTables data={testData} />
+        <CustomizedTables data={testData} headers={headers} />
       </Paper>
       <Paper elevation={4} sx={{ mb: 4 }}>
         <Card sx={{ minWidth: 275 }}>
