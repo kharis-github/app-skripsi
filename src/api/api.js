@@ -19,6 +19,7 @@ export const fetchData = async () => {
     }
 }
 
+// 1 | upload file raw text untuk disimpan di database
 export const uploadRawText = async (file) => {
     if (!file) return; // jika tidak ada data yang dikembalikan
     const formData = new FormData();
@@ -35,8 +36,19 @@ export const uploadRawText = async (file) => {
     }
 }
 
-// fetch contoh data dari server
+// 2 | send data untuk diklasifikasi
+export const classifyDataset = async (file) => {
+    if (!file) return // batalkan jika data tidak ada
+    const formData = new FormData()
+    formData.append('file', file);
 
-// send data untuk diklasifikasi
-
-// tampilkan performansi dari aplikasi
+    try {
+        const response = await axios.post(`${url}/text/classify`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        return response.data
+    } catch (error) {
+        console.error(error);
+        alert('Error! Proses upload gagal!', err);
+    }
+}

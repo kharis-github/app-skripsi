@@ -71,7 +71,7 @@ export default function CustomizedTables(props) {
               {/* <StyledTableCell>Text</StyledTableCell>
             <StyledTableCell align="right">Label</StyledTableCell> */}
               {headers.map((item, index) => (
-                <StyledTableCell align={index > 0 ? "right" : "none"} key={index} sx={item.toLowerCase() === 'full_text' ? { width: '200px' } : {}}>{item}</StyledTableCell>
+                <StyledTableCell align="right" key={index}>{item}</StyledTableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -82,7 +82,7 @@ export default function CustomizedTables(props) {
                   {row[headers[0].toLowerCase()]}
                 </StyledTableCell>
                 {headers.map((item, index) => (
-                  index > 0 ? <StyledTableCell align="right" key={index} sx={item.toLowerCase() === 'full_text' ? { width: '200px' } : {}}
+                  index > 0 ? <StyledTableCell align="right" key={index}
                   >{row[item.toLowerCase()]}</StyledTableCell> : null
                 ))}
               </StyledTableRow>
