@@ -11,20 +11,29 @@ import NavBar from "./components/Navbar";
 import { Box } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 
+const drawerWidth = 240
+
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <BrowserRouter>
-      <Box>
+      <Box sx={{ display: "flex" }}>
         <Sidebar />
-        <div style={{ padding: 20 }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1, // agar tidak tertindih sidebar
+            p: 3, // padding agar komponen tidak menempel di tepi
+            overflowY: "auto", // scroll vertikal jika konten panjang
+          }}
+        >
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<SecondPage />} />
             <Route path="/credits" element={<ThirdPage />} />
           </Routes>
-        </div>
+        </Box>
       </Box>
     </BrowserRouter>
   );
