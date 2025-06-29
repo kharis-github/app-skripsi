@@ -37,6 +37,8 @@ export default function SecondPage() {
 
   const [testData, setTestData] = useState(null); // testing data
 
+  const [rawDataFields, setRawDataFields] = useState(null) // array fields raw data
+  
   const [rawData, setRawData] = useState(null) // raw data
 
   const [file, setFile] = useState(null);
@@ -70,6 +72,7 @@ export default function SecondPage() {
     } = res
     console.log("Data: ", data);
     setTestData(data) // Set Test Data
+    setRawDataFields(Object.keys(raw_data[0])) // field raw data
     setRawData(raw_data) // raw data
 
     // console.log("Klasifikasi NB: ", nb_classification);
@@ -123,7 +126,7 @@ export default function SecondPage() {
         show && <div>
           <Box p={2}>
             <Paper elevation={4} sx={{ mb: 4 }}>
-              <CustomizedTables data={rawData} headers={full_headers} />
+              <CustomizedTables data={rawData} headers={rawDataFields} />
             </Paper>
             <Paper elevation={4} sx={{ mb: 4 }}>
               <Card sx={{ minWidth: 275 }}>
