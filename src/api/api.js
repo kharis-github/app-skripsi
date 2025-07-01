@@ -37,10 +37,11 @@ export const uploadRawText = async (file) => {
 }
 
 // 2 | send data untuk diklasifikasi
-export const classifyDataset = async (file) => {
+export const classifyDataset = async (file, type = 1) => {
     if (!file) return // batalkan jika data tidak ada
     const formData = new FormData()
     formData.append('file', file);
+    formData.append('type', type); // jenis proses (1 : with preprocessing, lain: no preprocessing)
 
     try {
         const response = await axios.post(`${url}/text/classify`, formData, {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CustomizedTables from "../components/CustomizedTables";
 import { classifyDataset, fetchData } from "../api/api";
 import {
@@ -7,11 +7,18 @@ import {
   Card,
   CardActions,
   CardContent,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
+  Stack,
   Typography,
 } from "@mui/material";
 import { data } from "react-router";
+import toast, { Toaster } from 'react-hot-toast'
+import Heatmap from "../components/Heatmap";
 
 export default function SecondPage() {
   const full_headers = [
@@ -38,7 +45,7 @@ export default function SecondPage() {
   const [testData, setTestData] = useState(null); // testing data
 
   const [rawDataFields, setRawDataFields] = useState(null) // array fields raw data
-  
+
   const [rawData, setRawData] = useState(null) // raw data
 
   const [file, setFile] = useState(null);
@@ -53,13 +60,44 @@ export default function SecondPage() {
   const [evalNB, setEvalNB] = useState(null)
   // evaluasi SVM
   const [evalSVM, setEvalSVM] = useState(null)
+  // message error (jika user mengupload file yang tidak valid)
+  const [error, setError] = useState(null)
+  // jenis preprocessing yang digunakan
+  const [processingType, setProcessingType] = useState(1)
+  // heatmap confusion matrix naive bayes
+  const [confusionMatrixNB, setConfusionMatrixNB] = useState(null)
+  // heatmap confusion matrix svm
+  const [confusionMatrixSVM, setConfusionMatrixSVM] = useState(null)
 
+  const fileInputRef = useRef() // untuk mengubah ref file upload
+
+  // const callToast = (text) => toast.success(text) // panggil toast
+
+  // proses file yang diupload user
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const file = e.target.files[0] // ambil data file dari parameter
+
+    if (!file) {
+    } // batalkan proses jika data invalid
+
+    // cek validitas file upload
+    const isExcel =
+      file.type ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      file.type === "application/vnd.ms-excel";
+
+    // batalkan proses upload jika file yang diinput tidak valid
+    if (!isExcel) {
+      toast.error('File harus berupa file Excel!') // tampilkan pesan gagal upload
+      setFile(null);
+    } else {
+      toast.success('File berhasil di-upload!') // tampilkan pesan success upload
+      setFile(file); // insert file dalam state
+    }
   };
 
   const handleUpload = async () => {
-    const res = await classifyDataset(file);
+    const res = await classifyDataset(file, processingType || 1);
     // deconstruct data
     const {
       data,
@@ -68,7 +106,9 @@ export default function SecondPage() {
       // svm_classification,
       classification,
       nb_evaluation,
-      svm_evaluation
+      svm_evaluation,
+      nb_confusion_image,
+      svm_confusion_image,
     } = res
     console.log("Data: ", data);
     setTestData(data) // Set Test Data
@@ -86,9 +126,40 @@ export default function SecondPage() {
     console.log("Evaluasi SVM: ", svm_evaluation);
     setEvalSVM(svm_evaluation) // Evaluasi SVM
 
+    // console.log("[DEBUG] Gambar Confusion Matrix")
+    // console.log(nb_confusion_image)
+    // console.log(svm_confusion_image)
+
+    // gambar confusion matrix
+    setConfusionMatrixNB(nb_confusion_image) // naive bayes
+    setConfusionMatrixSVM(svm_confusion_image) // svm
+
     // tampilkan workflow
     setShow(true)
   };
+
+  // hapus file yang sudah diupload
+  const deleteUpload = () => {
+    setFile(null)
+    // hapus isi file ref agar user dapat mengupload file yang sama lagi (jika mau)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null
+    }
+    toast.success('File berhasil di hapus.')
+  }
+
+  // CONFUSION MATRIX HEATMAP
+
+  const xLabels = ["Col 1", "Col 2"];
+  const yLabels = ["Row 1", "Row 2"];
+
+  // Data heatmap
+  const heatmapData = [
+    [0, 1],
+    [1, 2]
+  ];
+
+
 
   // test load data dari server
   // useEffect(() => {
@@ -115,13 +186,67 @@ export default function SecondPage() {
 
   return (
     <>
-      <div style={{ padding: 30 }}>
+      {/* FORM UPLOAD FILE */}
+      {/* <div style={{ padding: 30 }}>
         <input type="file" accept=".xlsx" onChange={handleFileChange} />
         <button onClick={handleUpload}>Upload Excel</button>
-      </div>
-      {/* <div>
-        <button onClick={() => setShow((prevState) => !prevState)}>Show Preprocessing</button>
       </div> */}
+      <Box sx={{ p: 4, maxWidth: 400, mx: "auto", textAlign: "center" }}>
+        <Typography variant="h6" gutterBottom>
+          Simulasi Penelitian
+        </Typography>
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          onChange={handleFileChange}
+          style={{ marginBottom: 16, display: "none" }}
+          id="upload-excel"
+          disabled={file ? true : false}
+          ref={fileInputRef}
+        />
+        <label htmlFor="upload-excel">
+          <Button variant="outlined" component="span" disabled={file ? true : false}>
+            Select Excel
+          </Button>
+        </label>{
+          file && (
+            <Box sx={{ paddingBottom: '20px' }}>
+              <Stack direction="row" spacing={2} justifyContent={'space-between'} style={{ padding: '20px' }}>
+                <Button variant="outlined" component="span" onClick={handleUpload} color="success">Upload</Button>
+                <Button variant="outlined" component="span" onClick={deleteUpload} color="error">Remove</Button>
+              </Stack>
+              <FormControl>
+                <InputLabel id="process-type-select-label">Processing</InputLabel>
+                <Select
+                  labelId="process-type-select-label"
+                  id="process-type-select"
+                  value={processingType}
+                  label="Process Type"
+                  onChange={(event) => {
+                    setProcessingType(event.target.value) // ubah type berdasarkan pilihan user
+                  }}
+                >
+                  <MenuItem value={1}>With Preprocessing</MenuItem>
+                  <MenuItem value={2}>No Preprocessing</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )
+        }
+        {/* <button onClick={() => {
+          toast.success('TEST TOAST!!!')
+        }}>Test Toast</button> */}
+        {file && (
+          <Typography color="success.main">
+            File dipilih: {file.name}
+          </Typography>
+        )}
+        {error && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        )}
+      </Box>
       {
         show && <div>
           <Box p={2}>
@@ -299,7 +424,9 @@ export default function SecondPage() {
               {/* Classification Report */}
               <CustomizedTables data={evalNB ? [evalNB.classification_report['macro avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
               {/* Confusion Matrix */}
-              <p>{evalNB ? evalNB.confusion_matrix : null}</p>
+              {/* <p>{evalNB ? evalNB.confusion_matrix : null}</p> */}
+              {/* <Heatmap values={evalNB.confusion_matrix} /> */}
+              <img src={`data:image/png;base64,${confusionMatrixNB}`} />
             </Grid>
             {/* Support Vector Machine */}
             <Grid item xs={12} md={6}>
@@ -309,7 +436,9 @@ export default function SecondPage() {
               {/* Classification Report */}
               <CustomizedTables data={evalSVM ? [evalSVM.classification_report['macro avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
               {/* Confusion Matrix */}
-              <p>{evalSVM ? evalSVM.confusion_matrix : null}</p>
+              {/* <p>{evalSVM ? evalSVM.confusion_matrix : null}</p> */}
+              {/* <Heatmap values={evalSVM.confusion_matrix} /> */}
+              <img src={`data:image/png;base64,${confusionMatrixSVM}`} />
             </Grid>
           </Box>
         </div>
