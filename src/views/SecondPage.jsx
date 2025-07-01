@@ -63,11 +63,13 @@ export default function SecondPage() {
   // message error (jika user mengupload file yang tidak valid)
   const [error, setError] = useState(null)
   // jenis preprocessing yang digunakan
-  const [processingType, setProcessingType] = useState(1)
+  const [processingType, setProcessingType] = useState(2)
   // heatmap confusion matrix naive bayes
   const [confusionMatrixNB, setConfusionMatrixNB] = useState(null)
   // heatmap confusion matrix svm
   const [confusionMatrixSVM, setConfusionMatrixSVM] = useState(null)
+  // menentukan tombol upload/remove aktif atau tidak
+  const [isDisabled, setIsDisabled] = useState(false)
 
   const fileInputRef = useRef() // untuk mengubah ref file upload
 
@@ -97,45 +99,55 @@ export default function SecondPage() {
   };
 
   const handleUpload = async () => {
-    const res = await classifyDataset(file, processingType || 1);
-    // deconstruct data
-    const {
-      data,
-      raw_data,
-      // nb_classification, 
-      // svm_classification,
-      classification,
-      nb_evaluation,
-      svm_evaluation,
-      nb_confusion_image,
-      svm_confusion_image,
-    } = res
-    console.log("Data: ", data);
-    setTestData(data) // Set Test Data
-    setRawDataFields(Object.keys(raw_data[0])) // field raw data
-    setRawData(raw_data) // raw data
+    const toastId = toast.loading("Memproses data...")
+    setIsDisabled(true) // non aktifkan tombol remove/upload
+    try {
+      const res = await classifyDataset(file, processingType || 1);
+      // deconstruct data
+      const {
+        data,
+        raw_data,
+        // nb_classification, 
+        // svm_classification,
+        classification,
+        nb_evaluation,
+        svm_evaluation,
+        nb_confusion_image,
+        svm_confusion_image,
+      } = res
+      console.log("Data: ", data);
+      setTestData(data) // Set Test Data
+      setRawDataFields(Object.keys(raw_data[0])) // field raw data
+      setRawData(raw_data) // raw data
 
-    // console.log("Klasifikasi NB: ", nb_classification);
-    // setCsfNB(nb_classification) // Hasil Klasifikasi NB
-    // console.log("Klasifikasi SVM: ", svm_classification);
-    // setCsfSVM(svm_classification) // Hasil Klasifikasi SVM
+      // console.log("Klasifikasi NB: ", nb_classification);
+      // setCsfNB(nb_classification) // Hasil Klasifikasi NB
+      // console.log("Klasifikasi SVM: ", svm_classification);
+      // setCsfSVM(svm_classification) // Hasil Klasifikasi SVM
 
-    setClassification(classification) // Hasil Klasifikasi NB dan SVM
-    console.log("Evaluasi NB: ", nb_evaluation);
-    setEvalNB(nb_evaluation) // Evaluasi NB
-    console.log("Evaluasi SVM: ", svm_evaluation);
-    setEvalSVM(svm_evaluation) // Evaluasi SVM
+      setClassification(classification) // Hasil Klasifikasi NB dan SVM
+      console.log("Evaluasi NB: ", nb_evaluation);
+      setEvalNB(nb_evaluation) // Evaluasi NB
+      console.log("Evaluasi SVM: ", svm_evaluation);
+      setEvalSVM(svm_evaluation) // Evaluasi SVM
 
-    // console.log("[DEBUG] Gambar Confusion Matrix")
-    // console.log(nb_confusion_image)
-    // console.log(svm_confusion_image)
+      // console.log("[DEBUG] Gambar Confusion Matrix")
+      // console.log(nb_confusion_image)
+      // console.log(svm_confusion_image)
 
-    // gambar confusion matrix
-    setConfusionMatrixNB(nb_confusion_image) // naive bayes
-    setConfusionMatrixSVM(svm_confusion_image) // svm
+      // gambar confusion matrix
+      setConfusionMatrixNB(nb_confusion_image) // naive bayes
+      setConfusionMatrixSVM(svm_confusion_image) // svm
 
-    // tampilkan workflow
-    setShow(true)
+      toast.success('Pemrosesan data berhasil!', { id: toastId })
+      // tampilkan workflow
+      setShow(true)
+    } catch (error) {
+      console.log("ERROR! ", error)
+      toast.error('Proses data gagal!')
+    } finally {
+      setIsDisabled(false) // aktifkan kembali tombol upload/remove
+    }
   };
 
   // hapus file yang sudah diupload
@@ -212,11 +224,11 @@ export default function SecondPage() {
           file && (
             <Box sx={{ paddingBottom: '20px' }}>
               <Stack direction="row" spacing={2} justifyContent={'space-between'} style={{ padding: '20px' }}>
-                <Button variant="outlined" component="span" onClick={handleUpload} color="success">Upload</Button>
-                <Button variant="outlined" component="span" onClick={deleteUpload} color="error">Remove</Button>
+                <Button disabled={isDisabled} variant="outlined" component="span" onClick={handleUpload} color="success">⬆️Upload</Button>
+                <Button disabled={isDisabled} variant="outlined" component="span" onClick={deleteUpload} color="error">🗑️Remove</Button>
               </Stack>
               <FormControl>
-                <InputLabel id="process-type-select-label">Processing</InputLabel>
+                <InputLabel id="process-type-select-label">Preprocessing</InputLabel>
                 <Select
                   labelId="process-type-select-label"
                   id="process-type-select"
@@ -280,7 +292,7 @@ export default function SecondPage() {
               </Card>
             </Paper>
             <Paper elevation={4} sx={{ mb: 4 }}>
-              <CustomizedTables data={testData} headers={['full_text', 'cleaning']} />
+              <CustomizedTables data={testData} headers={['full_text', 'cleaned']} />
             </Paper>
             <Paper elevation={4} sx={{ mb: 4 }}>
               <Card sx={{ minWidth: 275 }}>
@@ -307,7 +319,7 @@ export default function SecondPage() {
               </Card>
             </Paper>
             <Paper elevation={4} sx={{ mb: 4 }}>
-              <CustomizedTables data={testData} headers={['cleaning', 'normalized']} />
+              <CustomizedTables data={testData} headers={['cleaned', 'normalized']} />
             </Paper>
             <Paper elevation={4} sx={{ mb: 4 }}>
               <Card sx={{ minWidth: 275 }}>
@@ -422,9 +434,8 @@ export default function SecondPage() {
               {/* Accuracy */}
               <p>Accuracy: {evalNB ? evalNB.accuracy : null}</p>
               {/* Classification Report */}
-              <CustomizedTables data={evalNB ? [evalNB.classification_report['macro avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
+              <CustomizedTables data={evalNB ? [evalNB.classification_report['weighted avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
               {/* Confusion Matrix */}
-              {/* <p>{evalNB ? evalNB.confusion_matrix : null}</p> */}
               {/* <Heatmap values={evalNB.confusion_matrix} /> */}
               <img src={`data:image/png;base64,${confusionMatrixNB}`} />
             </Grid>
@@ -434,9 +445,8 @@ export default function SecondPage() {
               {/* Accuracy */}
               <p>Accuracy: {evalSVM ? evalSVM.accuracy : null}</p>
               {/* Classification Report */}
-              <CustomizedTables data={evalSVM ? [evalSVM.classification_report['macro avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
+              <CustomizedTables data={evalSVM ? [evalSVM.classification_report['weighted avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
               {/* Confusion Matrix */}
-              {/* <p>{evalSVM ? evalSVM.confusion_matrix : null}</p> */}
               {/* <Heatmap values={evalSVM.confusion_matrix} /> */}
               <img src={`data:image/png;base64,${confusionMatrixSVM}`} />
             </Grid>

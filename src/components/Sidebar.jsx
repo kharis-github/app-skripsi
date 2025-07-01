@@ -2,6 +2,7 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText } from "@mui/materia
 import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import PersonIcon from '@mui/icons-material/Person';
 import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -10,7 +11,8 @@ const Sidebar = () => {
   const navItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Simulasi Penelitian", icon: <InfoIcon />, path: "/about" },
-    { text: "Upload Data", icon: <FileUploadIcon />, path: "/credits" },
+    { text: "Upload Data", icon: <FileUploadIcon />, path: "/upload" },
+    { text: "Credits", icon: <PersonIcon />, path: "/credits" },
   ];
 
   return (

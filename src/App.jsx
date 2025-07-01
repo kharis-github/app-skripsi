@@ -11,6 +11,7 @@ import NavBar from "./components/Navbar";
 import { Box } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import toast, { Toaster } from 'react-hot-toast'
+import Credits from "./views/Credits";
 
 const drawerWidth = 240
 
@@ -47,7 +48,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<SecondPage />} />
-              <Route path="/credits" element={<ThirdPage />} />
+              <Route path="/upload" element={<ThirdPage />} />
+              <Route path="/credits" element={<Credits />} />
             </Routes>
           </Box>
         </Box>
