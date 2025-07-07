@@ -33,8 +33,8 @@ const Sidebar = (props) => {
       }}
     >
       <Box>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
-          #kaburajadulu
+        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', fontSize: '20px'}}>
+          Analisis Sentimen #kaburajadulu
         </Typography>
       </Box>
       <List>
