@@ -5,15 +5,16 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link, useLocation } from "react-router-dom";
 
-const drawerWidth = 240;
+// const drawerWidth = 240;
 
-const Sidebar = () => {
+const Sidebar = (props) => {
+  const drawerWidth = props.width
   const location = useLocation() // mendapatkan lokasi page yang sedang dibuka
 
   const navItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Simulasi Penelitian", icon: <InfoIcon />, path: "/about" },
-    { text: "Upload Data", icon: <FileUploadIcon />, path: "/upload" },
+    // { text: "Upload Data", icon: <FileUploadIcon />, path: "/upload" },
     { text: "Credits", icon: <PersonIcon />, path: "/credits" },
   ];
 

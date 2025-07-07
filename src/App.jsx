@@ -12,6 +12,8 @@ import { Box } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import toast, { Toaster } from 'react-hot-toast'
 import Credits from "./views/Credits";
+import FloatingButtonWithDialog from "./components/TombolPanduan";
+import TombolPanduan from "./components/TombolPanduan";
 
 const drawerWidth = 240
 
@@ -34,9 +36,10 @@ function App() {
     // </Box>
     <>
       <BrowserRouter>
+        {/* TOMBOL PANDUAN */}
         <Toaster />
         <Box sx={{ display: "flex" }}>
-          <Sidebar />
+          <Sidebar width={240} />
           <Box
             component="main"
             sx={{
@@ -45,6 +48,7 @@ function App() {
               overflowY: "auto", // scroll vertikal jika konten panjang
             }}
           >
+            <TombolPanduan padding={drawerWidth} />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<SecondPage />} />
