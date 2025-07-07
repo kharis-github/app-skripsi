@@ -17,13 +17,15 @@ const CircularButton = ({ onClick, padding }) => {
           borderRadius: '50%',
           width: 48,
           height: 48,
-          transition: 'background-color 0.3s ease',
+          transition: 'opacity 0.3s ease',
+          boxShadow: 2,
+          opacity: 0.5,
           '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)', // efek hover transparan
+            opacity: 1,
           },
         }}
       >
-        <InfoIcon />
+        <InfoIcon sx={{ color: 'gray'}}/>
       </IconButton>
     </Tooltip>
   );

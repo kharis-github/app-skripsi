@@ -15,7 +15,7 @@ import Credits from "./views/Credits";
 import FloatingButtonWithDialog from "./components/TombolPanduan";
 import TombolPanduan from "./components/TombolPanduan";
 
-const drawerWidth = 240
+const drawerWidth = 260
 
 function App() {
   const [count, setCount] = useState(0);
