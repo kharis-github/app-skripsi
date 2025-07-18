@@ -38,7 +38,9 @@ function App() {
       <BrowserRouter>
         {/* TOMBOL PANDUAN */}
         <Toaster />
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{
+          display: "flex"
+        }}>
           <Sidebar width={240} />
           <Box
             component="main"

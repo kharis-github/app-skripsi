@@ -19,6 +19,7 @@ import {
 import { data } from "react-router";
 import toast, { Toaster } from 'react-hot-toast'
 import Heatmap from "../components/Heatmap";
+import DropdownCard from "../components/DropdownCard";
 
 export default function SecondPage() {
   const full_headers = [
@@ -73,6 +74,20 @@ export default function SecondPage() {
 
   const fileInputRef = useRef() // untuk mengubah ref file upload
 
+  // penjelasan setiap metrik evaluasi yang digunakan
+  const description = {
+    'accuracy': 'Akurasi adalah proporsi dari klasifikasi yang benar. Secara matematis, nilai akurasi didapatkan dengan membagi jumlah pengklasifikasian benar dengan jumlah total klasifikasi.',
+    'precision': 'Precision merupakan proporsi dari pengklasifikasian positif yang benar positif. Nilai ini didapatkan dengan membagi jumlah pengklasifikasian positif yang benar dibandingkan total jumlah pengklasifikasian positif.',
+    'recall': 'Recall adalah proporsi dari True Positif (benar positif) yang diklasifikasi dengan benar. Metrik ini dihitung dengan membagi jumlah pengklasifikasian positif yang benar dengan total jumlah data bernilai positif.',
+    'f1-score': 'Skor F1 merupakan rata-rata harmonik antara nilai Precision dan Recall. Secara fungsional, metrik ini digunakan untuk mendapatkan keseimbangan antara nilai Precision dan Recall.',
+    'confusion-matrix': `Confusion matrix adalah matriks yang membandingkan nilai asli dataset dengan hasil pengklasifikasian model. Kolom merepresentasi nilai asli, dan baris merepresentasi hasil klasifikasi. 
+    \nKiri Atas - TN (True Negative): Nilai negatif diklasifikasi dengan benar
+    \nKiri Bawah - FN (False Negative): Nilai negatif diklasifikasi dengan salah
+    \nKanan Atas - TP (True Positive): Nilai positif diklasifikasi dengan benar
+    \nKanan Bawah - FP (False Positive): Nilai positif diklasifikasi dengan salah
+    `
+  }
+
   // const callToast = (text) => toast.success(text) // panggil toast
 
   // proses file yang diupload user
@@ -118,14 +133,29 @@ export default function SecondPage() {
       console.log("Data: ", data);
       setTestData(data) // Set Test Data
       setRawDataFields(Object.keys(raw_data[0])) // field raw data
-      setRawData(raw_data) // raw data
+      // konversi label menjadi true atau false
+      const raw_data_labelled = raw_data.map((item) => ({
+        ...item,
+        label: item.label === 1 ? 'true' : 'false',
+      }))
+      setRawData(raw_data_labelled) // raw data
 
       // console.log("Klasifikasi NB: ", nb_classification);
       // setCsfNB(nb_classification) // Hasil Klasifikasi NB
       // console.log("Klasifikasi SVM: ", svm_classification);
       // setCsfSVM(svm_classification) // Hasil Klasifikasi SVM
 
-      setClassification(classification) // Hasil Klasifikasi NB dan SVM
+      console.log(classification)
+
+      // konversi label menjadi true atau false
+      const labelled_classification = classification.map((item, index) => ({
+        ...item,
+        true_label: item.true_label === 1 ? 'true' : 'false',
+        pred_nb: item.pred_nb === 1 ? 'true' : 'false',
+        pred_svm: item.pred_svm === 1 ? 'true' : 'false',
+      }))
+
+      setClassification(labelled_classification) // Hasil Klasifikasi NB dan SVM
       console.log("Evaluasi NB: ", nb_evaluation);
       setEvalNB(nb_evaluation) // Evaluasi NB
       console.log("Evaluasi SVM: ", svm_evaluation);
@@ -427,29 +457,85 @@ export default function SecondPage() {
               </Card>
             </Paper>
           </Box>
-          <Box sx={{ flexGrow: 1, p: 2 }}>
+          <Box sx={{ flexGrow: 1, p: 2, justifyContent: 'center' }}>
             {/* Naive Bayes */}
             <Grid item xs={12} md={6}>
               <h2>Naive Bayes</h2>
               {/* Accuracy */}
-              <p>Accuracy: {evalNB ? evalNB.accuracy : null}</p>
+              <Box justifyContent="center" display="flex" alignItems="center" paddingBottom={2}>
+                <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300}>
+                  <DropdownCard title="Accuracy" description={description['accuracy']} score={evalNB ? evalNB.accuracy.toFixed(2) : null} />
+                </Box>
+              </Box>
               {/* Classification Report */}
-              <CustomizedTables data={evalNB ? [evalNB.classification_report['weighted avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
+              <Box display="flex" flexDirection="row" gap={2} paddingBottom={2}>
+                <DropdownCard title="Precision" description={description['precision']} score={evalNB.classification_report['weighted avg'].precision.toFixed(2)} />
+                <DropdownCard title="Recall" description={description['recall']} score={evalNB.classification_report['weighted avg'].recall.toFixed(2)} />
+                <DropdownCard title="F1-Score" description={description['f1-score']} score={evalNB.classification_report['weighted avg']['f1-score'].toFixed(2)} />
+              </Box>
               {/* Confusion Matrix */}
-              {/* <Heatmap values={evalNB.confusion_matrix} /> */}
-              <img src={`data:image/png;base64,${confusionMatrixNB}`} />
+              <Box justifyContent="center" display="flex" alignItems="center">
+                <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300} paddingBottom={2}>
+                  <DropdownCard title="Confusion Matrix" description={description['confusion-matrix']} img={`data:image/png;base64,${confusionMatrixNB}`} />
+                </Box>
+              </Box>
+              {/* <img src={`data:image/png;base64,${confusionMatrixNB}`} /> */}
             </Grid>
             {/* Support Vector Machine */}
             <Grid item xs={12} md={6}>
               <h2>Support Vector Machine</h2>
               {/* Accuracy */}
-              <p>Accuracy: {evalSVM ? evalSVM.accuracy : null}</p>
+              <Box justifyContent="center" display="flex" alignItems="center" paddingBottom={2}>
+                <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300}>
+                  <DropdownCard title="Accuracy" description="ACCURACY DESCRIPTION" score={evalSVM ? evalSVM.accuracy.toFixed(2) : null} />
+                </Box>
+              </Box>
               {/* Classification Report */}
-              <CustomizedTables data={evalSVM ? [evalSVM.classification_report['weighted avg']] : null} headers={['f1-score', 'precision', 'recall', 'support']} />
+              <Box display="flex" flexDirection="row" gap={2} paddingBottom={2}>
+                <DropdownCard title="Precision" description={description['precision']} score={evalSVM.classification_report['weighted avg'].precision.toFixed(2)} />
+                <DropdownCard title="Recall" description={description['recall']} score={evalSVM.classification_report['weighted avg'].recall.toFixed(2)} />
+                <DropdownCard title="F1-Score" description={description['f1-score']} score={evalSVM.classification_report['weighted avg']['f1-score'].toFixed(2)} />
+              </Box>
               {/* Confusion Matrix */}
-              {/* <Heatmap values={evalSVM.confusion_matrix} /> */}
-              <img src={`data:image/png;base64,${confusionMatrixSVM}`} />
+              <Box justifyContent="center" display="flex" alignItems="center">
+                <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300} paddingBottom={2}>
+                  <DropdownCard title="Confusion Matrix" description={description['confusion-matrix']} img={`data:image/png;base64,${confusionMatrixSVM}`} />
+                </Box>
+              </Box>
             </Grid>
+          </Box>
+          {/* KONKLUSI (penjelasan mana antara dua model yang memberikan hasil lebih baik) */}
+          <Box>
+            <Paper elevation={4} sx={{ mb: 4 }}>
+              <Card sx={{ minWidth: 275 }}>
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    align="center"
+                  >
+                    Hasil Evaluasi
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    align="left"
+                    sx={{ maxWidth: "1000px", color: "text.secondary" }}
+                  >
+                    <Typography variant="body1">
+                      Berdasarkan perbandingan nilai Accuracy hasil kinerja antara model Naive Bayes dan Support Vector Machine,
+                      ditemukan bahwa model <span style={{ fontWeight: 'bold' }}>Support Vector Machine</span> merupakan model yang lebih unggul dengan nilai Accuracy{' '}
+                      <span style={{ fontWeight: 'bold' }}>{evalSVM ? evalSVM.accuracy.toFixed(2) : null}</span>,
+                      dibandingkan model <span style={{ fontWeight: 'bold' }}>Naive Bayes</span> dengan nilai Accuracy{' '}
+                      <span style={{ fontWeight: 'bold' }}>{evalNB ? evalNB.accuracy.toFixed(2) : null}</span>.
+                    </Typography>
+                  </Typography>
+                </CardContent>
+                {/* <CardActions>
+              <Button size="small">Learn More</Button>
+            </CardActions> */}
+              </Card>
+            </Paper>
           </Box>
         </div>
       }
