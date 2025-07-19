@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { TablePagination } from '@mui/material';
+import { Chip, TablePagination } from '@mui/material';
 import { useState } from 'react';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -78,13 +78,29 @@ export default function CustomizedTables(props) {
           <TableBody>
             {paginatedRows.map((row) => (
               <StyledTableRow key={row.id}>
+                {/* Field Pertama */}
                 <StyledTableCell component="th" scope="row">
                   {row[headers[0].toLowerCase()]}
                 </StyledTableCell>
-                {headers.map((item, index) => (
-                  index > 0 ? <StyledTableCell align="right" key={index}
-                  >{row[item.toLowerCase()]}</StyledTableCell> : null
-                ))}
+                {/* Field yang Lain */}
+                {
+                  headers.map((item, index) => (
+                    index > 0 ?
+                      <StyledTableCell align="right" key={index}
+                      >
+                        {/* jika field merupakan label, generate Chip T/F. Jika tidak, render seperti biasa */}
+                        {
+                          ['label', 'true_label', 'pred_nb', 'pred_svm'].includes(item)
+                            ? <Chip
+                              label={row[item] === 'true' ? 'P' : 'N'}
+                              color={row[item] === 'true' ? 'success' : 'error'}
+                            />
+                            : row[item.toLowerCase()]
+                        }
+                      </StyledTableCell>
+                      : null
+                  ))
+                }
               </StyledTableRow>
             ))}
           </TableBody>

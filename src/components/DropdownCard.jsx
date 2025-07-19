@@ -42,7 +42,7 @@ const ExpandMore = styled((props) => {
 export default function DropdownCard(props) {
   const [expanded, setExpanded] = React.useState(false);
 
-  const description = props.description || "No Description Provided!"
+  const description = props.desc || "No Description Provided!"
   const score = props.score || null
   const title = props.title || "NO TITLE"
   const img = props.img || null
@@ -105,7 +105,7 @@ export default function DropdownCard(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography>
+          <Typography textAlign="justify" whiteSpace="pre-line">
             {description}
           </Typography>
         </CardContent>

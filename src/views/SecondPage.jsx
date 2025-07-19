@@ -76,7 +76,7 @@ export default function SecondPage() {
 
   // penjelasan setiap metrik evaluasi yang digunakan
   const description = {
-    'accuracy': 'Akurasi adalah proporsi dari klasifikasi yang benar. Secara matematis, nilai akurasi didapatkan dengan membagi jumlah pengklasifikasian benar dengan jumlah total klasifikasi.',
+    'accuracy': 'Accuracy adalah proporsi dari klasifikasi yang benar. Secara matematis, nilai akurasi didapatkan dengan membagi jumlah pengklasifikasian benar dengan jumlah total klasifikasi.',
     'precision': 'Precision merupakan proporsi dari pengklasifikasian positif yang benar positif. Nilai ini didapatkan dengan membagi jumlah pengklasifikasian positif yang benar dibandingkan total jumlah pengklasifikasian positif.',
     'recall': 'Recall adalah proporsi dari True Positif (benar positif) yang diklasifikasi dengan benar. Metrik ini dihitung dengan membagi jumlah pengklasifikasian positif yang benar dengan total jumlah data bernilai positif.',
     'f1-score': 'Skor F1 merupakan rata-rata harmonik antara nilai Precision dan Recall. Secara fungsional, metrik ini digunakan untuk mendapatkan keseimbangan antara nilai Precision dan Recall.',
@@ -464,19 +464,19 @@ export default function SecondPage() {
               {/* Accuracy */}
               <Box justifyContent="center" display="flex" alignItems="center" paddingBottom={2}>
                 <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300}>
-                  <DropdownCard title="Accuracy" description={description['accuracy']} score={evalNB ? evalNB.accuracy.toFixed(2) : null} />
+                  <DropdownCard title="Accuracy" desc={description['accuracy']} score={evalNB ? evalNB.accuracy.toFixed(2) : null} />
                 </Box>
               </Box>
               {/* Classification Report */}
               <Box display="flex" flexDirection="row" gap={2} paddingBottom={2}>
-                <DropdownCard title="Precision" description={description['precision']} score={evalNB.classification_report['weighted avg'].precision.toFixed(2)} />
-                <DropdownCard title="Recall" description={description['recall']} score={evalNB.classification_report['weighted avg'].recall.toFixed(2)} />
-                <DropdownCard title="F1-Score" description={description['f1-score']} score={evalNB.classification_report['weighted avg']['f1-score'].toFixed(2)} />
+                <DropdownCard title="Precision" desc={description['precision']} score={evalNB.classification_report['weighted avg'].precision.toFixed(2)} />
+                <DropdownCard title="Recall" desc={description['recall']} score={evalNB.classification_report['weighted avg'].recall.toFixed(2)} />
+                <DropdownCard title="F1-Score" desc={description['f1-score']} score={evalNB.classification_report['weighted avg']['f1-score'].toFixed(2)} />
               </Box>
               {/* Confusion Matrix */}
               <Box justifyContent="center" display="flex" alignItems="center">
                 <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300} paddingBottom={2}>
-                  <DropdownCard title="Confusion Matrix" description={description['confusion-matrix']} img={`data:image/png;base64,${confusionMatrixNB}`} />
+                  <DropdownCard title="Confusion Matrix" desc={description['confusion-matrix']} img={`data:image/png;base64,${confusionMatrixNB}`} />
                 </Box>
               </Box>
               {/* <img src={`data:image/png;base64,${confusionMatrixNB}`} /> */}
@@ -487,19 +487,19 @@ export default function SecondPage() {
               {/* Accuracy */}
               <Box justifyContent="center" display="flex" alignItems="center" paddingBottom={2}>
                 <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300}>
-                  <DropdownCard title="Accuracy" description="ACCURACY DESCRIPTION" score={evalSVM ? evalSVM.accuracy.toFixed(2) : null} />
+                  <DropdownCard title="Accuracy" desc={description['accuracy']} score={evalSVM ? evalSVM.accuracy.toFixed(2) : null} />
                 </Box>
               </Box>
               {/* Classification Report */}
               <Box display="flex" flexDirection="row" gap={2} paddingBottom={2}>
-                <DropdownCard title="Precision" description={description['precision']} score={evalSVM.classification_report['weighted avg'].precision.toFixed(2)} />
-                <DropdownCard title="Recall" description={description['recall']} score={evalSVM.classification_report['weighted avg'].recall.toFixed(2)} />
-                <DropdownCard title="F1-Score" description={description['f1-score']} score={evalSVM.classification_report['weighted avg']['f1-score'].toFixed(2)} />
+                <DropdownCard title="Precision" desc={description['precision']} score={evalSVM.classification_report['weighted avg'].precision.toFixed(2)} />
+                <DropdownCard title="Recall" desc={description['recall']} score={evalSVM.classification_report['weighted avg'].recall.toFixed(2)} />
+                <DropdownCard title="F1-Score" desc={description['f1-score']} score={evalSVM.classification_report['weighted avg']['f1-score'].toFixed(2)} />
               </Box>
               {/* Confusion Matrix */}
               <Box justifyContent="center" display="flex" alignItems="center">
                 <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap={2} width={300} paddingBottom={2}>
-                  <DropdownCard title="Confusion Matrix" description={description['confusion-matrix']} img={`data:image/png;base64,${confusionMatrixSVM}`} />
+                  <DropdownCard title="Confusion Matrix" desc={description['confusion-matrix']} img={`data:image/png;base64,${confusionMatrixSVM}`} />
                 </Box>
               </Box>
             </Grid>
@@ -522,7 +522,7 @@ export default function SecondPage() {
                     align="left"
                     sx={{ maxWidth: "1000px", color: "text.secondary" }}
                   >
-                    <Typography variant="body1">
+                    <Typography variant="body1" textAlign="justify">
                       Berdasarkan perbandingan nilai Accuracy hasil kinerja antara model Naive Bayes dan Support Vector Machine,
                       ditemukan bahwa model <span style={{ fontWeight: 'bold' }}>Support Vector Machine</span> merupakan model yang lebih unggul dengan nilai Accuracy{' '}
                       <span style={{ fontWeight: 'bold' }}>{evalSVM ? evalSVM.accuracy.toFixed(2) : null}</span>,
