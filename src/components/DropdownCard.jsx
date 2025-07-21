@@ -74,7 +74,7 @@ export default function DropdownCard(props) {
           // height="194"
           // image="/static/images/cards/paella.jpg"
           src={img}
-          alt="Paella dish"
+          alt="no image"
         />)
       }
       <CardContent>
